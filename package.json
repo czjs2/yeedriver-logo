@@ -1,0 +1,28 @@
+{
+  "name": "yeedriver-logo",
+  "version": "1.0.0",
+  "description": "logo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/czjs2/yeedriver-logo.git"
+  },
+  "keywords": [
+    "yeedriver",
+    "logo"
+  ],
+  "author": "fx",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/czjs2/yeedriver-logo/issues"
+  },
+  "homepage": "https://github.com/czjs2/yeedriver-logo#readme",
+  "dependencies": {
+    "node-snap7": "^0.4.0",
+    "q": "^1.5.0",
+    "yeedriver-base": "^1.0.0"
+  }
+}
