@@ -107,25 +107,32 @@ LOGO.prototype.ReadWQ = function(mapItem,devId){
 };
 LOGO.prototype.WriteBQ = function(mapItem,value,devId){
 
-        var start = Math.floor(mapItem.start / 8);
-        var end = Math.floor(mapItem.end / 8);
-        return Q.nbind(this.snap7Client.ABRead, this.snap7Client)(start, end - start + 1).then(function (res) {
+        var start_byte = Math.floor(mapItem.start / 8);
+        var end_byte = Math.floor(mapItem.end / 8);
+
+        return Q.nbind(this.snap7Client.ABRead, this.snap7Client)(start_byte, end_byte - start_byte + 1).then(function (res) {
 
             for (var j = mapItem.start; j <= mapItem.end; j++) {
-                var ins = res.readUInt8(j-mapItem.start);
+                let ins = res.readUInt8(Math.floor(j/ 8))
                 if (value[j]) {
-                    ins |= (1 << j % 8)
+                    ins |= (1 << (j % 8));
                 }
                 else {
-                    ins &= ~(1 << j % 8)
+                    ins &= ~(1 << (j % 8));
                 }
-                res.writeUInt8(ins, j-mapItem.start);
+
+                res.writeUInt8(ins, Math.floor(j/ 8));
             }
+
             // console.log('5==> mapItem',JSON.stringify(res))
-            return Q.nbind(this.snap7Client.DBWrite, this.snap7Client)(0, start, end - start + 1, res);
+            return Q.nbind(this.snap7Client.DBWrite, this.snap7Client)(0, start_byte, end_byte - start_byte + 1, res);
 
         }.bind(this)).catch(function (error) {
-            console.error(' >> Connection failed. Code #' + error + ' - ' + this.snap7Client.ErrorText(error));
+            if(_.isNumber(error)){
+                console.error(' >> Connection failed. Code #' + error + ' - ' + this.snap7Client.ErrorText(error));
+            }else{
+                console.error('LOGO.writeBQ',error.message||error);
+            }
 
             this.emit('snap7Connect','WriteBQ');
             return Q.reject('Connection failed!');
